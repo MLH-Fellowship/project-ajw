@@ -1,32 +1,74 @@
 import os
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
+from peewee import *
+import datetime
+from playhouse.shortcuts import model_to_dict
 
 load_dotenv()
 app = Flask(__name__)
 
-'''
-    dynamic navigation bar
-    url: the url for the link, list
-    people: all the people pages, list
-    label: what to call the link, list
-'''
-class nav:
-    def __init__(self, url, people, label):
-        self.url = url
-        self.people = people
-        self.label = label
+if os.getenv("TESTING") == "true":
+    print("Running in test mode")
+    mydb = SqliteDatabase('file:memory?mode=memory&cache=shared', uri=True)
+else:
+    mydb = MySQLDatabase(os.getenv("MYSQL_DATABASE"), 
+        user=os.getenv("MYSQL_USER"), 
+        password=os.getenv("MYSQL_PASSWORD"), 
+        host=os.getenv("MYSQL_HOST"), 
+        port=3306
+    )
 
-profile_nav = nav(
-    ["", "work_edu", "hobbies"],
-    ["amber", "jacky", "william"],
-    ["About Me", "Work Experience/Education", "Hobbies"]
-)
+print(mydb)
+
+class TimelinePost(Model):
+    name = CharField()
+    email = CharField()
+    content = TextField()
+    created_at = DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        database = mydb
+
+mydb.connect()
+mydb.create_tables([TimelinePost])
 
 @app.route('/')
 def index():
-    return render_template('index.html', nav=profile_nav, title="MLH Fellow", url=os.getenv("URL"))
+    return render_template('index.html')
 
+@app.route('/api/timeline_post', methods=['POST'])
+def post_time_line_post():
+    gname = request.form.get('name')
+    if (gname == None) or (gname == ""):
+        return "Invalid name", 400
+    else:
+        name = request.form['name']
+    email = request.form['email']
+    if "@" not in email and ".com" not in email:
+        return "Invalid email", 400
+    content = request.form['content']
+    if content == "":
+        return "Invalid content", 400
+    timeline_post = TimelinePost.create(name=name, email=email, content=content)
+
+    return model_to_dict(timeline_post)
+
+@app.route('/api/timeline_post', methods=['GET'])
+def get_time_line_post():
+    return {
+        'timeline_posts': [
+            model_to_dict(p) for p in TimelinePost.select().order_by(TimelinePost.created_at.desc())
+        ]
+    }
+
+@app.route('/timeline')
+def timeline():
+    return render_template('timeline.html', title="Timeline")
+
+
+
+""""
 # for amber page
 @app.route('/amber')
 def amber():
@@ -48,8 +90,8 @@ def work_edu(name):
     profile_title = name.capitalize()
     job = {
         "amber": ["Black Stallion Winery"],
-        "jacky": ["Wendy's"],
-        "william": ["U.S. Census Bureau"]
+        #"jacky": ["Wendy's"],
+        #"william": ["U.S. Census Bureau"]
     }
     # key: name
     # value: 2d list with inner generating new lines
@@ -93,9 +135,4 @@ def hobbies(name):
         "william": "william_hobby.jpg"
     }
     return render_template("hobbies.html", nav=profile_nav, hobbies=profile_hobby, title=profile_title, photo=photos[name], url=os.getenv("URL"))
-
-
-# for map page
-@app.route('/map')
-def map():
-    return render_template('map.html', nav=profile_nav, title="Map", url=os.getenv("URL"))
+"""

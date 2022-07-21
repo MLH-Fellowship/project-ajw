@@ -1,10 +1,87 @@
-{% extends "base.html" %}
 
-{% block body %}
-    <div class="profile">
-        <div id="profile-picture" class="profile-picture">
-            <img src="./static/img/logo.jpg">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,0">
+    <title> home </title>
+    <link rel="stylesheet" href="./static/styles/style.css">
+</head>
+
+<body>
+    <!-- Home page -->
+    <div class="hero" id="section1">
+        <nav>
+            <!-- <img src="./static/img/amber_photo.jpg" class="logo" width="80"> -->
+            <h2 class="logo">Portfolio SITE</h2>
+            <ul>
+                <li><a href="#section1">Home</a></li>
+                <li><a href="#section2">Education</a></li>
+                <li><a href="#section3">experiences</a></li>
+                <li><a href="#section4">Skills</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <h1>I'm Amber<span> Xue</span></h1>
+            <h4> amberxue@seas.upenn.com | 530-601-8642</h4>
+            <br>
+            <p>
+                I'm currently pursuing a Computer Science Master's degree at UPenn. 
+                    <br>I'm passionately seeking to make an impact on the traditional production industry with advanced 
+                    <br>computer technology as well as my programming skills and product insights.
+            </p>
+        <a href='#'>DOWNLOAD CV</a>
         </div>
-        <h1>{{ title }}</h1>
     </div>
-{% endblock %}
+
+
+
+    <!-- Education page -->
+    <div class="education" id="section2">
+        <div class="title">
+            <h2>My Educations</h2>
+        </div>
+
+        <div class="box">
+            <div class="card">
+                <img src="./static/img/upenn_logo.png" class="upenn" width="160">
+                <h5>Web Development</h5>
+                <div class="pra">
+                    <p>Every website should be build with two primary goals: Firstly, it needs
+                        to work across all devices. Secondly, it needs to be fast as possible.
+                    </p>
+
+                    <p style="text-align: center;">
+                        <a class="button" href="#">Read More</a>
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="./static/img/ucdavis_logo.png" class="davis" width="280">
+                <h5>Web Development</h5>
+                <div class="pra">
+                    <p>Every website should be build with two primary goals: Firstly, it needs
+                        to work across all devices. Secondly, it needs to be fast as possible.
+                    </p>
+
+                    <p style="text-align: center;">
+                        <a class="button" href="#">Read More</a>
+                    </p>
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    <!-- Education page -->
+
+
+</body>
+</html>
